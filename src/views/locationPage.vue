@@ -17,10 +17,15 @@
     <ion-content :fullscreen="true">
       <ion-list>
         <ion-item v-for="position in positions">
-          <ion-label
-            >Lat: {{ position.latitude }}, Lon:
-            {{ position.longitude }}</ion-label
-          >
+          <ion-label>
+            <h3>
+              Lat: {{ position.latitude }}, Lon:
+              {{ position.longitude }}
+            </h3>
+            <p>
+              {{ position.address }}
+            </p>
+          </ion-label>
         </ion-item>
       </ion-list>
     </ion-content>
@@ -35,6 +40,7 @@
 
 <script lang="ts">
 import router from "@/router";
+import { reverseGeocode } from "@/services/api";
 import { getCurrentUser, logoutUser } from "@/services/user";
 import { Geolocation } from "@capacitor/geolocation";
 import {
@@ -91,9 +97,12 @@ export default defineComponent({
       const coordinates = await Geolocation.getCurrentPosition();
       this.latitude = coordinates.coords.latitude;
       this.longitude = coordinates.coords.longitude;
-      this.positions.push({
-        latitude: this.latitude,
-        longitude: this.longitude,
+      reverseGeocode(this.latitude, this.longitude).then((result) => {
+        this.positions.push({
+          latitude: this.latitude,
+          longitude: this.longitude,
+          address: result,
+        });
       });
     },
     removeAllPositions() {

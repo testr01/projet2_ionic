@@ -31,7 +31,7 @@ export const signupAction = async ({
   return response;
 };
 
-export const everseGeocode = async (
+export const reverseGeocode = async (
   lat: Number,
   lon: Number
 ): Promise<string> => {
