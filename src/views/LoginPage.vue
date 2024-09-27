@@ -6,8 +6,13 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content>
+    <ion-content id="content">
+      <img src="@/assets/logo.webp" alt="Logo" class="logo">
       <div id="container">
+        <div id="typed-output">
+          <span ref="typedElement"></span>
+        </div>
+
         <ion-label class="label">Se connecter</ion-label>
         <ion-input
           label="Email"
@@ -24,93 +29,49 @@
           type="password"
           v-model="data.password"
         ></ion-input>
+
         <div id="buttons">
-          <ion-button expand="full" @click="login()">
-            Se connecter<ion-icon name="log-in-outline"></ion-icon
-          ></ion-button>
-          <ion-button expand="full" color="light" router-link="/signup"
-            >Créer un compte</ion-button
-          >
+          <!-- Bouton Se connecter -->
+          <ion-button expand="full" @click="login()" class="login-button">
+            <span class="login-text">Se connecter</span>
+            <ion-icon name="log-in-outline"></ion-icon>
+          </ion-button>
+
+          <!-- Bouton Créer un compte -->
+          <ion-button expand="full" class="signup-button" router-link="/signup">
+            <span class="signup-text">Créer un compte</span>
+          </ion-button>
         </div>
       </div>
     </ion-content>
   </ion-page>
 </template>
 
-<style scoped>
-.label {
-  font-size: xx-large;
-}
-
-#buttons {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  width: 100%;
-}
-
-#container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  margin-left: 5%;
-  margin-right: 5%;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  row-gap: 20px;
-}
-</style>
-
 <script lang="ts">
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonFooter,
-  IonBackButton,
-  IonButtons,
-  IonButton,
-  IonLabel,
-  IonItem,
-  IonInput,
-  IonSelect,
-  IonSelectOption,
-  IonIcon,
-} from "@ionic/vue";
-import { alertController, loadingController } from "@ionic/vue";
-import { defineComponent } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { loginAction } from "../services/api";
 import { setCurrentUser } from "@/services/user";
+import Typed from "typed.js";
+import { alertController, loadingController } from "@ionic/vue";
 
 export default defineComponent({
-  components: {
-    IonContent,
-    IonHeader,
-    IonPage,
-    IonTitle,
-    IonToolbar,
-    IonFooter,
-    IonBackButton,
-    IonButtons,
-    IonButton,
-    IonLabel,
-    IonItem,
-    IonInput,
-    IonSelect,
-    IonSelectOption,
-    IonIcon,
-  },
   setup() {
     const router = useRouter();
-    return { router };
+    const typedElement = ref(null);
+
+    onMounted(() => {
+      const options = {
+        strings: ["Bienvenue sur la plateforme"],
+        typeSpeed: 90,
+        backSpeed: 70,
+        loop: true,
+      };
+
+      new Typed(typedElement.value, options);
+    });
+
+    return { router, typedElement };
   },
   methods: {
     async login() {
@@ -118,7 +79,7 @@ export default defineComponent({
       loginAction(this.data)
         .then(async (response) => {
           const loading = await loadingController.create({
-            message: "Connexion reussie...",
+            message: "Connexion réussie...",
           });
           await loading.present();
           this.router.replace("/localisation");
@@ -145,3 +106,72 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+
+.logo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 70px; /* Taille très petite du logo */
+  height: auto; /* Maintient les proportions du logo */
+}
+
+/* Texte du label Se connecter */
+.label {
+  font-size: xx-large;
+}
+
+/* Fond de la page */
+#content {
+  --background: linear-gradient(to bottom, #0000ff, #000);
+}
+
+/* Boutons avec disposition flexible */
+#buttons {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 100%;
+}
+
+/* Conteneur centré */
+#container {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 5%;
+  margin-right: 5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 20px;
+}
+
+/* Effet de texte animé */
+#typed-output {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 50px;
+}
+
+/* Style du bouton Se connecter */
+.login-button::part(native) {
+  border-radius: 50px; /* Coins arrondis */
+  background-color: white; /* Fond blanc */
+  color: #0000ff; /* Texte bleu */
+  font-weight: bold; /* Texte gras */
+}
+
+/* Style du bouton Créer un compte */
+.signup-button::part(native) {
+  border-radius: 50px; /* Coins arrondis */
+  background-color: black !important; /* Fond noir */
+  color: white; /* Texte blanc */
+  font-weight: bold; /* Texte gras */
+}
+</style>

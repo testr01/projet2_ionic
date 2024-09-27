@@ -14,7 +14,7 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content :fullscreen="true">
+    <ion-content id="content" :fullscreen="true">
       <ion-list>
         <ion-item v-for="position in positions">
           <ion-label

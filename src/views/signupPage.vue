@@ -8,28 +8,28 @@
         <ion-title>Sign Up</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content>
+    <ion-content id="content">
       <div id="container">
         <ion-label class="label">Créer un compte</ion-label>
         <ion-input
           label="Prénom"
           label-placement="floating"
           fill="outline"
-          placeholder="Prénom"
+          placeholder="Quel est votre prénom"
           v-model="data.firstName"
         ></ion-input>
         <ion-input
           label="Nom"
           label-placement="floating"
           fill="outline"
-          placeholder="Nom"
+          placeholder="Quel est votre nom"
           v-model="data.lastName"
         ></ion-input>
         <ion-input
           label="Email"
           label-placement="floating"
           fill="outline"
-          placeholder="Email address"
+          placeholder="Inscrivez votre courriel"
           v-model="data.email"
           type="email"
         ></ion-input>
@@ -37,12 +37,12 @@
           label="Mot de passe"
           label-placement="floating"
           fill="outline"
-          placeholder="Mot de passe"
+          placeholder="Ajoutez votre mot de passe"
           v-model="data.password"
           type="password"
         ></ion-input>
         <ion-button style="width: 100%" expand="full" @click="handleSignup()"
-          >Sign Up</ion-button
+          >Inscrivez-vous</ion-button
         >
       </div>
     </ion-content>
@@ -53,6 +53,10 @@
 .label {
   font-size: xx-large;
 }
+
+#content {
+  --background: linear-gradient(to bottom, #0000ff, #000);
+} 
 
 #container {
   position: absolute;
@@ -68,6 +72,10 @@
   align-items: center;
   row-gap: 20px;
 }
+
+
+
+
 </style>
 
 <script lang="ts">
