@@ -1,9 +1,9 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true">
-      <ion-toolbar>
+    <ion-header :translucent="true" >
+      <ion-toolbar class= "blue-toolbar">
         <ion-buttons slot="end">
-          <ion-button @click="logout()">Logout</ion-button>
+          <ion-button class="logout-button" @click="logout()">Logout</ion-button>
           <ion-button
             :disabled="positions.length <= 0"
             @click="removeAllPositions()"
@@ -16,17 +16,18 @@
 
     <ion-content id="content" :fullscreen="true">
       <ion-list>
-        <ion-item v-for="position in positions">
-          <ion-label
-            >Lat: {{ position.latitude }}, Lon:
-            {{ position.longitude }}</ion-label
-          >
+        <ion-item v-for="(position, index) in positions" :key="index">
+          <ion-label>
+            Lat: {{ position.latitude }}, Lon: {{ position.longitude }}<br />
+            <span v-if="position.address">Adresse: {{ position.address }}</span>
+            <span v-else>Chargement de l'adresse...</span>
+          </ion-label>
         </ion-item>
       </ion-list>
     </ion-content>
 
     <ion-footer>
-      <ion-button expand="full" @click="getCurrentPosition()"
+      <ion-button expand="full" class="addLocation" @click="getCurrentPosition()"
         >Add Location</ion-button
       >
     </ion-footer>
@@ -56,6 +57,7 @@ import {
   IonList,
 } from "@ionic/vue";
 import { defineComponent, ref } from "vue";
+import axios from "axios"; 
 
 export default defineComponent({
   components: {
@@ -89,16 +91,40 @@ export default defineComponent({
   methods: {
     async getCurrentPosition() {
       const coordinates = await Geolocation.getCurrentPosition();
-      this.latitude = coordinates.coords.latitude;
-      this.longitude = coordinates.coords.longitude;
+      const latitude = coordinates.coords.latitude;
+      const longitude = coordinates.coords.longitude;
+
+      
+      const address = await this.getAddressFromCoordinates(latitude, longitude);
+
+      
       this.positions.push({
-        latitude: this.latitude,
-        longitude: this.longitude,
+        latitude: latitude,
+        longitude: longitude,
+        address: address || "Adresse introuvable", 
       });
     },
+
+    async getAddressFromCoordinates(lat: number, lon: number) {
+      try {
+        const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`;
+        const response = await axios.get(url);
+
+        if (response.data && response.data.display_name) {
+          return response.data.display_name;
+        } else {
+          return null;
+        }
+      } catch (error) {
+        console.error("Erreur lors du géocodage:", error);
+        return null;
+      }
+    },
+
     removeAllPositions() {
       this.positions.splice(0);
     },
+
     logout() {
       logoutUser();
       router.replace("/login");
@@ -112,3 +138,35 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+#content {
+  --background: linear-gradient(to bottom, #0000ff, #000);
+}
+
+.blue-toolbar {
+  --background: #0000ff;
+  --color: white;
+}
+
+
+.addLocation::part(native) {
+  border-radius: 50px; 
+  background-color: #FFFFFF; 
+  color: #0000ff; 
+  font-weight: bold; 
+}
+
+
+
+.logout-button {
+  --background: transparent; 
+  --color: white; 
+}
+
+.logout-button:hover {
+  --background: white; 
+  --color: #0000ff;
+}
+
+</style>

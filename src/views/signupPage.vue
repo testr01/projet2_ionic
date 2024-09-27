@@ -1,7 +1,7 @@
 <template>
   <ion-page>
-    <ion-header>
-      <ion-toolbar>
+    <ion-header class="blue-toolbar">
+      <ion-toolbar class="blue-toolbar">
         <ion-buttons slot="start">
           <ion-back-button default-href="/login"></ion-back-button>
         </ion-buttons>
@@ -48,35 +48,6 @@
     </ion-content>
   </ion-page>
 </template>
-
-<style scoped>
-.label {
-  font-size: xx-large;
-}
-
-#content {
-  --background: linear-gradient(to bottom, #0000ff, #000);
-} 
-
-#container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  margin-left: 5%;
-  margin-right: 5%;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  row-gap: 20px;
-}
-
-
-
-
-</style>
 
 <script lang="ts">
 import {
@@ -151,3 +122,37 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.label {
+  font-size: xx-large;
+}
+
+.blue-toolbar {
+  --background: #0000ff; 
+  --color: white; 
+}
+
+#content {
+  --background: linear-gradient(to bottom, #0000ff, #000);
+} 
+
+#container {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 5%;
+  margin-right: 5%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 20px;
+}
+
+
+
+
+</style>

@@ -1,13 +1,14 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true">
-      <ion-toolbar>
+    <ion-header :translucent="true" >
+      <ion-toolbar class="blue-toolbar" >
         <ion-title size="large">Login</ion-title>
       </ion-toolbar>
     </ion-header>
 
     <ion-content id="content">
       <img src="@/assets/logo.webp" alt="Logo" class="logo">
+     
       <div id="container">
         <div id="typed-output">
           <span ref="typedElement"></span>
@@ -31,15 +32,12 @@
         ></ion-input>
 
         <div id="buttons">
-          <!-- Bouton Se connecter -->
           <ion-button expand="full" @click="login()" class="login-button">
-            <span class="login-text">Se connecter</span>
+            <div class="login-text">Se connecter</div>
             <ion-icon name="log-in-outline"></ion-icon>
           </ion-button>
-
-          <!-- Bouton Créer un compte -->
           <ion-button expand="full" class="signup-button" router-link="/signup">
-            <span class="signup-text">Créer un compte</span>
+            <div class="signup-text">Créer un compte</div>
           </ion-button>
         </div>
       </div>
@@ -48,6 +46,23 @@
 </template>
 
 <script lang="ts">
+import {
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+  IonFooter,
+  IonBackButton,
+  IonButtons,
+  IonButton,
+  IonLabel,
+  IonItem,
+  IonInput,
+  IonSelect,
+  IonSelectOption,
+  IonIcon,
+} from "@ionic/vue";
 import { defineComponent, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { loginAction } from "../services/api";
@@ -56,6 +71,23 @@ import Typed from "typed.js";
 import { alertController, loadingController } from "@ionic/vue";
 
 export default defineComponent({
+  components: {
+    IonContent,
+    IonHeader,
+    IonPage,
+    IonTitle,
+    IonToolbar,
+    IonFooter,
+    IonBackButton,
+    IonButtons,
+    IonButton,
+    IonLabel,
+    IonItem,
+    IonInput,
+    IonSelect,
+    IonSelectOption,
+    IonIcon,
+  },
   setup() {
     const router = useRouter();
     const typedElement = ref(null);
@@ -113,21 +145,21 @@ export default defineComponent({
   position: absolute;
   top: 10px;
   left: 10px;
-  width: 70px; /* Taille très petite du logo */
-  height: auto; /* Maintient les proportions du logo */
+  width: 70px; 
+  height: auto; 
 }
 
-/* Texte du label Se connecter */
+
 .label {
   font-size: xx-large;
 }
 
-/* Fond de la page */
+
 #content {
   --background: linear-gradient(to bottom, #0000ff, #000);
 }
 
-/* Boutons avec disposition flexible */
+
 #buttons {
   margin-top: 20px;
   display: flex;
@@ -136,7 +168,12 @@ export default defineComponent({
   width: 100%;
 }
 
-/* Conteneur centré */
+.blue-toolbar {
+  --background: #0000ff; 
+  --color: white; 
+}
+
+
 #container {
   position: absolute;
   left: 0;
@@ -151,7 +188,7 @@ export default defineComponent({
   row-gap: 20px;
 }
 
-/* Effet de texte animé */
+
 #typed-output {
   font-size: 2.5rem;
   font-weight: bold;
@@ -159,19 +196,19 @@ export default defineComponent({
   margin-bottom: 50px;
 }
 
-/* Style du bouton Se connecter */
+
 .login-button::part(native) {
-  border-radius: 50px; /* Coins arrondis */
-  background-color: white; /* Fond blanc */
-  color: #0000ff; /* Texte bleu */
-  font-weight: bold; /* Texte gras */
+  border-radius: 50px; 
+  background-color: white; 
+  color: #0000ff; 
+  font-weight: bold; 
 }
 
-/* Style du bouton Créer un compte */
+
 .signup-button::part(native) {
-  border-radius: 50px; /* Coins arrondis */
-  background-color: black !important; /* Fond noir */
-  color: white; /* Texte blanc */
-  font-weight: bold; /* Texte gras */
+  border-radius: 50px; 
+  background-color: black !important; 
+  color: white; 
+  font-weight: bold; 
 }
 </style>
