@@ -211,4 +211,8 @@ export default defineComponent({
   color: white; 
   font-weight: bold; 
 }
+
+.signup-button:hover {
+  --background: #1f1f78; 
+}
 </style>

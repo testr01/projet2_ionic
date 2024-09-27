@@ -41,7 +41,7 @@
           v-model="data.password"
           type="password"
         ></ion-input>
-        <ion-button style="width: 100%" expand="full" @click="handleSignup()"
+        <ion-button style="width: 100%" class="inscrivezVousButton" expand="full" @click="handleSignup()"
           >Inscrivez-vous</ion-button
         >
       </div>
@@ -136,6 +136,12 @@ export default defineComponent({
 #content {
   --background: linear-gradient(to bottom, #0000ff, #000);
 } 
+.inscrivezVousButton::part(native) {
+  border-radius: 50px; 
+  background-color: white; 
+  color: #0000ff; 
+  font-weight: bold; 
+}
 
 #container {
   position: absolute;
