@@ -1,9 +1,9 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true">
-      <ion-toolbar>
+    <ion-header :translucent="true" >
+      <ion-toolbar class= "blue-toolbar">
         <ion-buttons slot="end">
-          <ion-button @click="logout()">Logout</ion-button>
+          <ion-button class="logout-button" @click="logout()">Logout</ion-button>
           <ion-button
             :disabled="positions.length <= 0"
             @click="removeAllPositions()"
@@ -14,8 +14,7 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content :fullscreen="true">
-      <ion-list>
+    <ion-content id="content" :fullscreen="true">
         <ion-item v-for="position in positions">
           <ion-label>
             <h3>
@@ -31,7 +30,7 @@
     </ion-content>
 
     <ion-footer>
-      <ion-button expand="full" @click="getCurrentPosition()"
+      <ion-button expand="full" class="addLocation" @click="getCurrentPosition()"
         >Add Location</ion-button
       >
     </ion-footer>
@@ -62,6 +61,7 @@ import {
   IonList,
 } from "@ionic/vue";
 import { defineComponent, ref } from "vue";
+import axios from "axios"; 
 
 export default defineComponent({
   components: {
@@ -94,7 +94,7 @@ export default defineComponent({
   },
   methods: {
     async getCurrentPosition() {
-      const coordinates = await Geolocation.getCurrentPosition();
+      const coordinates = await Geolocation.getCurrentPosition(); 
       this.latitude = coordinates.coords.latitude;
       this.longitude = coordinates.coords.longitude;
       reverseGeocode(this.latitude, this.longitude).then((result) => {
@@ -105,9 +105,11 @@ export default defineComponent({
         });
       });
     },
+
     removeAllPositions() {
       this.positions.splice(0);
     },
+
     logout() {
       logoutUser();
       router.replace("/login");
@@ -121,3 +123,35 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+#content {
+  --background: linear-gradient(to bottom, #0000ff, #000);
+}
+
+.blue-toolbar {
+  --background: #0000ff;
+  --color: white;
+}
+
+
+.addLocation::part(native) {
+  border-radius: 50px; 
+  background-color: #FFFFFF; 
+  color: #0000ff; 
+  font-weight: bold; 
+}
+
+
+
+.logout-button {
+  --background: transparent; 
+  --color: white; 
+}
+
+.logout-button:hover {
+  --background: white; 
+  --color: #0000ff;
+}
+
+</style>

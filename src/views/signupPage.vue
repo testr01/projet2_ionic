@@ -1,35 +1,35 @@
 <template>
   <ion-page>
-    <ion-header>
-      <ion-toolbar>
+    <ion-header class="blue-toolbar">
+      <ion-toolbar class="blue-toolbar">
         <ion-buttons slot="start">
           <ion-back-button default-href="/login"></ion-back-button>
         </ion-buttons>
         <ion-title>Sign Up</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content>
+    <ion-content id="content">
       <div id="container">
         <ion-label class="label">Créer un compte</ion-label>
         <ion-input
           label="Prénom"
           label-placement="floating"
           fill="outline"
-          placeholder="Prénom"
+          placeholder="Quel est votre prénom"
           v-model="data.firstName"
         ></ion-input>
         <ion-input
           label="Nom"
           label-placement="floating"
           fill="outline"
-          placeholder="Nom"
+          placeholder="Quel est votre nom"
           v-model="data.lastName"
         ></ion-input>
         <ion-input
           label="Email"
           label-placement="floating"
           fill="outline"
-          placeholder="Email address"
+          placeholder="Inscrivez votre courriel"
           v-model="data.email"
           type="email"
         ></ion-input>
@@ -37,38 +37,17 @@
           label="Mot de passe"
           label-placement="floating"
           fill="outline"
-          placeholder="Mot de passe"
+          placeholder="Ajoutez votre mot de passe"
           v-model="data.password"
           type="password"
         ></ion-input>
-        <ion-button style="width: 100%" expand="full" @click="handleSignup()"
-          >Sign Up</ion-button
+        <ion-button style="width: 100%" class="inscrivezVousButton" expand="full" @click="handleSignup()"
+          >Inscrivez-vous</ion-button
         >
       </div>
     </ion-content>
   </ion-page>
 </template>
-
-<style scoped>
-.label {
-  font-size: xx-large;
-}
-
-#container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  margin-left: 5%;
-  margin-right: 5%;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  row-gap: 20px;
-}
-</style>
 
 <script lang="ts">
 import {
@@ -143,3 +122,43 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.label {
+  font-size: xx-large;
+}
+
+.blue-toolbar {
+  --background: #0000ff; 
+  --color: white; 
+}
+
+#content {
+  --background: linear-gradient(to bottom, #0000ff, #000);
+} 
+.inscrivezVousButton::part(native) {
+  border-radius: 50px; 
+  background-color: white; 
+  color: #0000ff; 
+  font-weight: bold; 
+}
+
+#container {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 5%;
+  margin-right: 5%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 20px;
+}
+
+
+
+
+</style>
