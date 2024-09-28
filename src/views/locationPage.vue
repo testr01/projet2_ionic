@@ -15,12 +15,15 @@
     </ion-header>
 
     <ion-content id="content" :fullscreen="true">
-      <ion-list>
-        <ion-item v-for="(position, index) in positions" :key="index">
+        <ion-item v-for="position in positions">
           <ion-label>
-            Lat: {{ position.latitude }}, Lon: {{ position.longitude }}<br />
-            <span v-if="position.address">Adresse: {{ position.address }}</span>
-            <span v-else>Chargement de l'adresse...</span>
+            <h3>
+              Lat: {{ position.latitude }}, Lon:
+              {{ position.longitude }}
+            </h3>
+            <p>
+              {{ position.address }}
+            </p>
           </ion-label>
         </ion-item>
       </ion-list>
@@ -36,6 +39,7 @@
 
 <script lang="ts">
 import router from "@/router";
+import { reverseGeocode } from "@/services/api";
 import { getCurrentUser, logoutUser } from "@/services/user";
 import { Geolocation } from "@capacitor/geolocation";
 import {
@@ -90,35 +94,16 @@ export default defineComponent({
   },
   methods: {
     async getCurrentPosition() {
-      const coordinates = await Geolocation.getCurrentPosition();
-      const latitude = coordinates.coords.latitude;
-      const longitude = coordinates.coords.longitude;
-
-      
-      const address = await this.getAddressFromCoordinates(latitude, longitude);
-
-      
-      this.positions.push({
-        latitude: latitude,
-        longitude: longitude,
-        address: address || "Adresse introuvable", 
+      const coordinates = await Geolocation.getCurrentPosition(); 
+      this.latitude = coordinates.coords.latitude;
+      this.longitude = coordinates.coords.longitude;
+      reverseGeocode(this.latitude, this.longitude).then((result) => {
+        this.positions.push({
+          latitude: this.latitude,
+          longitude: this.longitude,
+          address: result,
+        });
       });
-    },
-
-    async getAddressFromCoordinates(lat: number, lon: number) {
-      try {
-        const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`;
-        const response = await axios.get(url);
-
-        if (response.data && response.data.display_name) {
-          return response.data.display_name;
-        } else {
-          return null;
-        }
-      } catch (error) {
-        console.error("Erreur lors du géocodage:", error);
-        return null;
-      }
     },
 
     removeAllPositions() {
