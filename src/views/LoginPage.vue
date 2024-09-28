@@ -107,7 +107,6 @@ export default defineComponent({
   },
   methods: {
     async login() {
-      var loginSuccess = false;
       loginAction(this.data)
         .then(async (response) => {
           const loading = await loadingController.create({
@@ -140,7 +139,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
 .logo {
   position: absolute;
   top: 10px;
@@ -149,16 +147,13 @@ export default defineComponent({
   height: auto; 
 }
 
-
 .label {
   font-size: xx-large;
 }
 
-
 #content {
   --background: linear-gradient(to bottom, #0000ff, #000);
 }
-
 
 #buttons {
   margin-top: 20px;
@@ -172,7 +167,6 @@ export default defineComponent({
   --background: #0000ff; 
   --color: white; 
 }
-
 
 #container {
   position: absolute;
@@ -188,7 +182,6 @@ export default defineComponent({
   row-gap: 20px;
 }
 
-
 #typed-output {
   font-size: 2.5rem;
   font-weight: bold;
@@ -196,14 +189,12 @@ export default defineComponent({
   margin-bottom: 50px;
 }
 
-
 .login-button::part(native) {
   border-radius: 50px; 
   background-color: white; 
   color: #0000ff; 
   font-weight: bold; 
 }
-
 
 .signup-button::part(native) {
   border-radius: 50px; 
