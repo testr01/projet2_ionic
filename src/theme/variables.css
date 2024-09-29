@@ -1,2 +1,11 @@
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
+#content {
+    --background: linear-gradient(to bottom, #0000ff, #000);
+  }
+
+
+  .blue-toolbar {
+    --background: #0000ff; 
+    --color: white; 
+  }

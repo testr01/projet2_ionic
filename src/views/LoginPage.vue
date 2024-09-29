@@ -155,9 +155,7 @@ export default defineComponent({
 }
 
 
-#content {
-  --background: linear-gradient(to bottom, #0000ff, #000);
-}
+
 
 
 #buttons {
@@ -168,10 +166,7 @@ export default defineComponent({
   width: 100%;
 }
 
-.blue-toolbar {
-  --background: #0000ff; 
-  --color: white; 
-}
+
 
 
 #container {

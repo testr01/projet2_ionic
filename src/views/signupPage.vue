@@ -128,14 +128,9 @@ export default defineComponent({
   font-size: xx-large;
 }
 
-.blue-toolbar {
-  --background: #0000ff; 
-  --color: white; 
-}
 
-#content {
-  --background: linear-gradient(to bottom, #0000ff, #000);
-} 
+
+
 .inscrivezVousButton::part(native) {
   border-radius: 50px; 
   background-color: white; 

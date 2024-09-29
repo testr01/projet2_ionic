@@ -140,14 +140,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
-#content {
-  --background: linear-gradient(to bottom, #0000ff, #000);
-}
 
-.blue-toolbar {
-  --background: #0000ff;
-  --color: white;
-}
+
+
 
 
 .addLocation::part(native) {
