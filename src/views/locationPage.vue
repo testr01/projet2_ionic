@@ -15,17 +15,19 @@
     </ion-header>
 
     <ion-content id="content" :fullscreen="true">
-        <ion-item v-for="position in positions">
-          <ion-label>
-            <h3>
-              Lat: {{ position.latitude }}, Lon:
-              {{ position.longitude }}
-            </h3>
-            <p>
-              {{ position.address }}
-            </p>
-          </ion-label>
-        </ion-item>
+        <ion-list>
+          <ion-item v-for="(position, index) in positions" :key="index">
+            <ion-label>
+              <h3>
+                Lat: {{ position.latitude }}, Lon:
+                {{ position.longitude }}
+              </h3>
+              <p>
+                {{ position.address }}
+              </p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
     </ion-content>
 
     <ion-footer>
@@ -60,7 +62,6 @@ import {
   IonList,
 } from "@ionic/vue";
 import { defineComponent, ref } from "vue";
-import axios from "axios"; 
 
 export default defineComponent({
   components: {
