@@ -26,7 +26,6 @@
             </p>
           </ion-label>
         </ion-item>
-      </ion-list>
     </ion-content>
 
     <ion-footer>
