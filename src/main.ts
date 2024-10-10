@@ -34,6 +34,16 @@ import '@ionic/vue/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 
+import { addIcons } from 'ionicons';
+import { locateOutline, personOutline } from 'ionicons/icons';
+
+addIcons({
+  'locate-outline': locateOutline,
+  'person-outline': personOutline
+});
+
+
+
 const app = createApp(App)
   .use(IonicVue)
   .use(router);
