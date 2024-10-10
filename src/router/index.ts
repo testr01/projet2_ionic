@@ -3,6 +3,7 @@ import { RouteRecordRaw } from "vue-router";
 import LoginPage from "@/views/LoginPage.vue";
 import LocationPage from "@/views/locationPage.vue";
 import SignupPage from "@/views/signupPage.vue";
+import ProfilePage from "@/views/profilePage.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -24,6 +25,12 @@ const routes: Array<RouteRecordRaw> = [
     name: "GéoLocalisation",
     component: LocationPage,
   },
+  {
+    path: "/profile",
+    name: "Profile",
+    component: ProfilePage,
+  },
+
 ];
 
 const router = createRouter({
@@ -34,4 +41,3 @@ const router = createRouter({
 export default router;
 
 
-// a suivre

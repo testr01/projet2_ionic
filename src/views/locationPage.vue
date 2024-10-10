@@ -1,152 +1,215 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true" >
-      <ion-toolbar class= "blue-toolbar">
-        <ion-buttons slot="end">
-          <ion-button class="logout-button" @click="logout()">Logout</ion-button>
-          <ion-button
-            :disabled="positions.length <= 0"
-            @click="removeAllPositions()"
-            >Remove all</ion-button
-          >
+    
+    <ion-menu content-id="content" side="start">
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title>Menu</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <ion-list>
+          <ion-item button @click="goToPage('/location')">
+            <ion-label>Location</ion-label>
+          </ion-item>
+          <ion-item button @click="goToPage('/profile')">
+            <ion-label>Profile</ion-label>
+          </ion-item>
+          <ion-item button @click="logout">
+            <ion-label>Logout</ion-label>
+          </ion-item>
+        </ion-list>
+
+        
+        <div class="app-version">
+          <p>Version 1.0.0</p>
+        </div>
+      </ion-content>
+    </ion-menu>
+
+    
+    <ion-header :translucent="true">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button> 
         </ion-buttons>
-        <ion-title>GéoLocalisation</ion-title>
+        <ion-title>Localisation</ion-title>
       </ion-toolbar>
     </ion-header>
 
-    <ion-content id="content" :fullscreen="true">
-        <ion-list>
-          <ion-item v-for="(position, index) in positions" :key="index">
-            <ion-label>
-              <h3>
-                Lat: {{ position.latitude }}, Lon:
-                {{ position.longitude }}
-              </h3>
-              <p>
-                {{ position.address }}
-              </p>
-            </ion-label>
-          </ion-item>
-        </ion-list>
-    </ion-content>
+    <ion-content id="content">
+      
+      <div class="control-buttons">
+        <ion-button expand="full" @click="startTracking" :disabled="isTracking">Démarrer le suivi</ion-button>
+        <ion-button expand="full" @click="stopTrackingAndPrompt" :disabled="!isTracking">Terminer le suivi</ion-button>
+        <ion-button expand="full" @click="savePositions" :disabled="positions.length === 0">Sauvegarder</ion-button>
+      </div>
 
-    <ion-footer>
-      <ion-button expand="full" class="addLocation" @click="getCurrentPosition()"
-        >Add Location</ion-button
-      >
-    </ion-footer>
+     
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Ma Localisation Actuelle</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-list>
+            <ion-item>
+              <ion-label>Latitude</ion-label>
+              <ion-text>{{ currentPosition.latitude }}</ion-text>
+            </ion-item>
+            <ion-item>
+              <ion-label>Longitude</ion-label>
+              <ion-text>{{ currentPosition.longitude }}</ion-text>
+            </ion-item>
+            <ion-item>
+              <ion-label>Adresse</ion-label>
+              <ion-text>{{ currentPosition.address }}</ion-text>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+
+      
+      <ion-card v-if="positions.length > 0" class="scrollable-list">
+        <ion-card-header>
+          <ion-card-title>Liste des positions capturées</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-list>
+            <ion-item v-for="(position, index) in positions" :key="index">
+              <ion-label>
+                <h3>Position {{ index + 1 }}</h3>
+                <p>Latitude: {{ position.latitude }}</p>
+                <p>Longitude: {{ position.longitude }}</p>
+                <p>Timestamp: {{ new Date(position.timestamp).toLocaleString() }}</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+
+      
+      <ion-alert
+        v-if="showAlert"
+        :is-open="showAlert"
+        header="Nom du trajet"
+        inputs="[{name: 'tripName', type: 'textarea', placeholder: 'Entrez le nom du trajet'}]"
+        buttons="[
+          { text: 'Annuler', role: 'cancel', handler: () => showAlert = false },
+          { text: 'Sauvegarder', handler: (data) => saveTripWithName(data.tripName) }
+        ]"
+      ></ion-alert>
+    </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
-import router from "@/router";
-import { reverseGeocode } from "@/services/api";
-import { getCurrentUser, logoutUser } from "@/services/user";
-import { Geolocation } from "@capacitor/geolocation";
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonFooter,
-  IonBackButton,
-  IonButtons,
-  IonButton,
-  IonLabel,
-  IonItem,
-  IonInput,
-  IonSelect,
-  IonSelectOption,
-  IonIcon,
-  IonList,
-} from "@ionic/vue";
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref } from 'vue';
+import { reverseGeocode, saveTrip } from '@/services/api'; 
+import { getCurrentUser, logoutUser } from '@/services/user'; 
+import { useRouter } from 'vue-router'; 
 
 export default defineComponent({
-  components: {
-    IonContent,
-    IonHeader,
-    IonPage,
-    IonTitle,
-    IonToolbar,
-    IonFooter,
-    IonBackButton,
-    IonButtons,
-    IonButton,
-    IonLabel,
-    IonItem,
-    IonInput,
-    IonSelect,
-    IonSelectOption,
-    IonIcon,
-    IonList,
-  },
-  ionViewDidEnter() {
-    if (getCurrentUser() == null) {
-      router.replace("/login");
-    }
-  },
   setup() {
-    const positions = ref([] as any[]);
+    const router = useRouter();
+    const currentPosition = ref({ latitude: 0, longitude: 0, address: "Adresse inconnue" });
+    const positions = ref<{ latitude: number; longitude: number; timestamp: number }[]>([]);
+    const isTracking = ref(false);
+    const showAlert = ref(false); 
+    let watchId: number | null = null;
 
-    return { positions };
-  },
-  methods: {
-    async getCurrentPosition() {
-      const coordinates = await Geolocation.getCurrentPosition(); 
-      this.latitude = coordinates.coords.latitude;
-      this.longitude = coordinates.coords.longitude;
-      reverseGeocode(this.latitude, this.longitude).then((result) => {
-        this.positions.push({
-          latitude: this.latitude,
-          longitude: this.longitude,
-          address: result,
-        });
-      });
-    },
+    
+    const startTracking = () => {
+      if (isTracking.value) return;
 
-    removeAllPositions() {
-      this.positions.splice(0);
-    },
+      isTracking.value = true;
+      watchId = navigator.geolocation.watchPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          const timestamp = position.timestamp;
 
-    logout() {
-      logoutUser();
-      router.replace("/login");
-    },
-  },
-  data() {
+          currentPosition.value.latitude = latitude;
+          currentPosition.value.longitude = longitude;
+
+          
+          try {
+            currentPosition.value.address = await reverseGeocode(latitude, longitude);
+          } catch (error) {
+            console.error("Erreur lors de la récupération de l'adresse : ", error);
+            currentPosition.value.address = "Impossible de récupérer l'adresse";
+          }
+
+         
+          positions.value.push({ latitude, longitude, timestamp });
+        },
+        (error) => {
+          console.error("Erreur de géolocalisation :", error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        }
+      );
+    };
+
+    
+    const stopTrackingAndPrompt = () => {
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        isTracking.value = false;
+        showAlert.value = true; 
+      }
+    };
+
+   
+    const savePositions = async (tripName: string) => {
+      if (!tripName || !positions.value.length) {
+        console.error("Le nom du trajet est requis ou aucune position n'a été capturée");
+        return;
+      }
+
+      const user = getCurrentUser(); 
+      if (!user) {
+        console.error("Utilisateur non connecté");
+        return;
+      }
+
+      try {
+        const response = await saveTrip(user.userId, tripName, positions.value);
+        console.log("Trajet sauvegardé avec succès :", response.data);
+       
+        positions.value = [];
+        showAlert.value = false; 
+      } catch (error) {
+        console.error("Erreur lors de la sauvegarde des positions :", error);
+      }
+    };
+
+    
+    const goToPage = (path: string) => {
+      router.push(path); 
+    };
+
+    
+    const logout = () => {
+      logoutUser(); 
+      window.location.href = '/login'; 
+    };
+
     return {
-      latitude: 0,
-      longitude: 0,
+      currentPosition,
+      positions,
+      isTracking,
+      showAlert,
+      startTracking,
+      stopTrackingAndPrompt,
+      savePositions,
+      goToPage, 
+      logout,
     };
   },
 });
 </script>
-
-<style scoped>
-
-
-
-
-
-.addLocation::part(native) {
-  border-radius: 50px; 
-  background-color: #FFFFFF; 
-  color: #0000ff; 
-  font-weight: bold; 
-}
-
-
-
-.logout-button {
-  --background: transparent; 
-  --color: white; 
-}
-
-.logout-button:hover {
-  --background: white; 
-  --color: #0000ff;
-}
-
-</style>
