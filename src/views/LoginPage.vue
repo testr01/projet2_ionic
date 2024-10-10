@@ -113,7 +113,7 @@ export default defineComponent({
             message: "Connexion réussie...",
           });
           await loading.present();
-          this.router.replace("/localisation");
+          this.router.replace("/location");
           setCurrentUser(response.data);
           loading.dismiss();
         })
