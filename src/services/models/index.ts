@@ -11,6 +11,7 @@ export interface SignupRequest {
 }
 
 export interface ApiResponse {
+  trips: []
   userId: number;
   firstName: string;
   lastName: string;

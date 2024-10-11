@@ -67,7 +67,7 @@ export const getTripsByUserId = async (
 };
 
 
-export const addTrip = async (
+export const addLocations = async (
   pathName: string,
   userId: string,
   trips: any[]
@@ -103,7 +103,7 @@ export const deleteTrip = async (
   return response;
 };
 
-
+// Service pour ajouter un trajet
 export const saveTrip = async (
   userId: string,
   pathName: string,
